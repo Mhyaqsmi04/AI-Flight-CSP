@@ -37,7 +37,6 @@ def parse_input(lines):
         f = Flight(o, d, int(day_s), int(price_s))
         flights_by_route.setdefault((o, d), []).append(f)
 
-    # keep your ordering (day, price)
     for key in flights_by_route:
         flights_by_route[key].sort(key=lambda x: (x.day, x.price))
 
@@ -87,7 +86,6 @@ def backtrack(i, domains, assignment, min_stays, max_stays, min_price, max_price
         return False
 
     for val in domains[i]:
-        # local consistency with previous
         if i > 0:
             mn = min_stays[i-1]
             mx = max_stays[i-1]
@@ -97,14 +95,12 @@ def backtrack(i, domains, assignment, min_stays, max_stays, min_price, max_price
 
         assignment[i] = val
 
-        # prune by max_price
         partial = sum(f.price for f in assignment[:i+1])
         if partial > max_price:
             assignment[i] = None
             stats.backtracks += 1
             continue
 
-        # branch & bound
         if mode == "cheapest" and best["cost"] < 10**18 and partial >= best["cost"]:
             assignment[i] = None
             stats.backtracks += 1
